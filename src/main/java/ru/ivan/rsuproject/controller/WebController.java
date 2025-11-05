@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.ivan.rsuproject.dto.ClientRequestDto;
 import ru.ivan.rsuproject.dto.ClientResponseDto;
+import ru.ivan.rsuproject.dto.HealthResponseDto;
 import ru.ivan.rsuproject.mapper.ClientMapper;
 import ru.ivan.rsuproject.service.ClientService;
 
@@ -22,6 +23,11 @@ public class WebController {
     @GetMapping("/ping")
     public ResponseEntity<String> index() {
         return ResponseEntity.ok("Hello");
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<HealthResponseDto> health() {
+        return  ResponseEntity.ok(new HealthResponseDto("OK"));
     }
 
     @PostMapping("/clients")
