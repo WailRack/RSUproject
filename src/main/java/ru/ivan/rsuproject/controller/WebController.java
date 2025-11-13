@@ -27,7 +27,7 @@ public class WebController {
 
     @GetMapping("/health")
     public ResponseEntity<HealthResponseDto> health() {
-        return  ResponseEntity.ok(new HealthResponseDto("OK"));
+        return ResponseEntity.ok(new HealthResponseDto("OK"));
     }
 
     @PostMapping("/clients")
