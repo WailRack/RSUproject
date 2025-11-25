@@ -50,4 +50,9 @@ public class WebController {
         var client = clientService.findById(id);
         return ResponseEntity.ok(ClientMapper.toDto(client));
     }
+    
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<HealthResponseDto> notFoundException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(new HealthResponseDto("s"));
+    }
 }
