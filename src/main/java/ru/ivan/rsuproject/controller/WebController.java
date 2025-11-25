@@ -53,6 +53,6 @@ public class WebController {
     
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<HealthResponseDto> notFoundException(IllegalArgumentException ex) {
-        return ResponseEntity.badRequest().body(new HealthResponseDto("s"));
+        return ResponseEntity.badRequest().body(new HealthResponseDto(ex.getMessage()));
     }
 }
