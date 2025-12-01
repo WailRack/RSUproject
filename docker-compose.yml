@@ -1,32 +1,8 @@
 services:
-  db:
-    image: postgres:16
-    container_name: scoring_postgres
-    environment:
-      POSTGRES_DB: scoring_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    networks:
-      - scoring-net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   backend:
     build: ./backend
     container_name: scoring-backend
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/scoring_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8080:8080"
     networks:
@@ -47,6 +23,3 @@ services:
 networks:
   scoring-net:
     driver: bridge
-
-volumes:
-  pg_data:

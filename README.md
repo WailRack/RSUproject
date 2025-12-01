@@ -10,12 +10,12 @@
 **Backend:**
 - Java 21
 - Spring Boot 3.5.7
-- Spring Data JPA (PostgreSQL)
 - Lombok 
 - Gradle (Groovy DSL)
 
-**Database:**
-- PostgreSQL 16
+**Frontend:**
+- TypeScript
+- React 19
 
 **Infrastructure:**
 - Docker + Docker Compose
@@ -30,6 +30,11 @@ credit-scoring-service/
 │   ├── src/
 │   ├── build.gradle
 │   └── Dockerfile
+│
+├── frontend/             # React + Vite приложение
+│   ├── public/
+│   ├── src/
+│   └── index.html
 │
 ├── docker-compose.yml   # Общее описание сервисов
 └── README.md
@@ -50,44 +55,21 @@ docker compose up --build
 
 ### 🔹 2. Проверить работу сервисов
 
-| Сервис | Адрес | Описание |
-|--------|--------|-----------|
-| 🧩 Backend (API) | http://localhost:8080/api | REST API Spring Boot |
-| 🐘 PostgreSQL | http://localhost:5432 | Хранение данных |
+| Сервис           | Адрес                     | Описание                   |
+|------------------|---------------------------|----------------------------|
+| 🧩 Backend (API) | http://localhost:8080/api | REST API Spring Boot       |
+| 📝️ Docs |http://localhost:8080/scalar| REST API Spring Docs       |
+| 🖥️ Frontend      | http://localhost:3000     | Пользовательский Интерфейс |
 
 ---
 
-## Пример API
 
-**POST /api/clients**
-```json
-{
-  "fullName": "Иван Иванов",
-  "age": 32,
-  "income": 85000
-}
-```
-
-**GET /api/clients**
-```json
-[
-  {
-    "id": 1,
-    "fullName": "Иван Иванов",
-    "age": 32,
-    "income": 85000,
-    "score": 0.78
-  }
-]
-```
-
----
 
 ## Профили Spring Boot
 
 | Профиль | Назначение | Настройки |
 |----------|------------|------------|
-| `default` | локальная разработка | `localhost` PostgreSQL |
+| `default` | локальная разработка | `localhost`  |
 | `docker` | запуск в контейнере | `postgres:5432` (docker network) |
 
 ---
