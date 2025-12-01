@@ -6,13 +6,13 @@ import ru.ivan.rsuproject.dto.ScoreRequest;
 
 @Service
 public class LogisticRegressionScoringService {
-    private static final double BIAS = -5.0;
-    private static final double B_AGE = 0.03;
-    private static final double B_INCOME = 0.00004;
-    private static final double B_YEARS_AT_JOB = 0.25;
-    private static final double B_DEPENDENTS = -0.1;
-    private static final double B_EXISTING_LOAN = -0.7;
-    private static final double B_CREDIT_SCORE = 0.01;
+    private static final double BIAS = -33.96665684641257;
+    private static final double B_AGE = 0.16873913094417098;
+    private static final double B_INCOME = 0.00017358785572127173;
+    private static final double B_YEARS_AT_JOB = 1.407236822348883;
+    private static final double B_DEPENDENTS = -1.2759260447846899;
+    private static final double B_EXISTING_LOAN = -4.559601911359217;
+    private static final double B_CREDIT_SCORE = 0.055854701990360224;
 
     public double predictDefaultProbability(ScoreRequest r) {
         double z = BIAS;
