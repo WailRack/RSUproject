@@ -18,3 +18,19 @@ spring:
 
 server:
   port: 8080
+
+springdoc:
+  show-actuator: true
+
+scalar:
+  actuatorEnabled: true
+  enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
