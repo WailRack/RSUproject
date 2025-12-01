@@ -20,7 +20,7 @@ public class WebController {
     public ResponseEntity<HealthResponseDto> health() {
         return ResponseEntity.ok(new HealthResponseDto("OK"));
     }
-    
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<HealthResponseDto> notFoundException(IllegalArgumentException ex) {
         return ResponseEntity.badRequest().body(new HealthResponseDto(ex.getMessage()));
