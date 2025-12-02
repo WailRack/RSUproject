@@ -10,7 +10,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./newfrontend
       dockerfile: Dockerfile
     container_name: frontend
     ports:

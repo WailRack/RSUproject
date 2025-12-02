@@ -1,5 +1,6 @@
 package ru.ivan.rsuproject.dto;
 
+
 public record ScoreRequest(
     Integer age,
     Double income,
