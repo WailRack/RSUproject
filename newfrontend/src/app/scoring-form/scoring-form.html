@@ -1,0 +1,105 @@
+<div class="scoring-container">
+  <h2>Кредитный скоринг</h2>
+  
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-row">
+      <label for="age">Возраст</label>
+      <input 
+        id="age"
+        type="number" 
+        formControlName="age"
+        placeholder="Введите возраст"
+      />
+      <div class="error" *ngIf="f['age'].touched && f['age'].invalid">
+        Возраст обязателен (18–100)
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="income">Доход (в месяц)</label>
+      <input 
+        id="income"
+        type="number" 
+        formControlName="income"
+        placeholder="Введите доход"
+      />
+      <div class="error" *ngIf="f['income'].touched && f['income'].invalid">
+        Доход обязателен и должен быть ≥ 0
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="yearsAtJob">Стаж работы (лет)</label>
+      <input 
+        id="yearsAtJob"
+        type="number" 
+        formControlName="yearsAtJob"
+        placeholder="Введите стаж"
+      />
+      <div class="error" *ngIf="f['yearsAtJob'].touched && f['yearsAtJob'].invalid">
+        Стаж обязателен и должен быть ≥ 0
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="dependents">Количество иждивенцев</label>
+      <input 
+        id="dependents"
+        type="number" 
+        formControlName="dependents"
+        placeholder="0"
+      />
+      <div class="error" *ngIf="f['dependents'].touched && f['dependents'].invalid">
+        Не может быть меньше 0
+      </div>
+    </div>
+
+    <div class="form-row checkbox-row">
+      <label for="hasExistingLoan">
+        <input 
+          id="hasExistingLoan"
+          type="checkbox" 
+          formControlName="hasExistingLoan"
+        />
+        Есть действующий кредит
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label for="creditScore">Кредитный рейтинг</label>
+      <input 
+        id="creditScore"
+        type="number" 
+        formControlName="creditScore"
+        placeholder="300-900"
+      />
+      <div class="error" *ngIf="f['creditScore'].touched && f['creditScore'].invalid">
+        Кредитный рейтинг обязателен (300–900)
+      </div>
+    </div>
+
+    <button 
+      type="submit" 
+      [disabled]="loading() || form.invalid"
+      [class.loading]="loading()"
+    >
+      {{ loading() ? 'Расчёт...' : 'Рассчитать' }}
+    </button>
+  </form>
+
+  <div class="error global-error" *ngIf="error()">
+    {{ error() }}
+  </div>
+
+  <div class="result" *ngIf="result()">
+    <h3>Результат</h3>
+    <p><strong>Rule score:</strong> {{ result()!.ruleScore | number:'1.0-2' }}</p>
+    <p><strong>Вероятность дефолта (ML):</strong> {{ result()!.mlProbability | percent:'1.0-2' }}</p>
+    <p>
+      <strong>Решение:</strong>
+      <span [ngClass]="{ 'approved': result()!.approved, 'denied': !result()!.approved }">
+        {{ result()!.approved ? 'ОДОБРЕНО' : 'ОТКАЗ' }}
+      </span>
+    </p>
+  </div>
+</div>
