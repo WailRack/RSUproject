@@ -38,7 +38,6 @@ export class ScoringFormComponent {
       creditScore: [null, [Validators.required, Validators.min(300), Validators.max(900)]]
     });
 
-    // Инициализация темы
     this.applyTheme();
   }
 

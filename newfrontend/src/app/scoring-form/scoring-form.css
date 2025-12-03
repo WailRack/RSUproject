@@ -1,10 +1,8 @@
-/* Глобальные стили для host */
 :host {
   display: block;
   font-family: 'Inter', 'Segoe UI', 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Плавный переход для всей страницы */
 ::ng-deep body {
   margin: 0;
   transition: background 0.5s ease, color 0.5s ease;
@@ -13,19 +11,16 @@
   line-height: 1.5;
 }
 
-/* Светлая тема с градиентом */
 ::ng-deep body.light {
   background: linear-gradient(135deg, #fdf6f0, #e0e7ff) !important;
   color: #1e1e1e !important;
 }
 
-/* Тёмная тема с градиентом */
 ::ng-deep body.dark {
   background: linear-gradient(135deg, #1a1a2e, #162447) !important;
   color: #f0f0f0 !important;
 }
 
-/* Контейнер формы */
 .scoring-container {
   max-width: 480px;
   margin: 3rem auto;
@@ -41,7 +36,6 @@
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
-/* Заголовок */
 h2 {
   margin-top: 0;
   margin-bottom: 2rem;
@@ -50,7 +44,6 @@ h2 {
   letter-spacing: 0.5px;
 }
 
-/* Форма */
 .form-row {
   margin-bottom: 1.25rem;
 }
@@ -63,7 +56,6 @@ h2 {
   color: inherit;
 }
 
-/* Плавный переход для всех input и button */
 input[type="number"], 
 input[type="checkbox"], 
 button {
@@ -71,7 +63,6 @@ button {
   font-family: inherit;
 }
 
-/* Инпуты */
 input[type="number"] {
   width: 100%;
   padding: 0.65rem 0.75rem;
@@ -95,7 +86,6 @@ input[type="number"]:focus {
   box-shadow: 0 0 0 2px rgba(90,103,216,0.2);
 }
 
-/* Checkbox */
 .checkbox-row {
   display: flex;
   align-items: center;
@@ -115,7 +105,6 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-/* Кнопка отправки */
 button[type="submit"] {
   width: 100%;
   margin-top: 1.25rem;
@@ -146,7 +135,6 @@ button[type="submit"]:disabled {
   cursor: not-allowed;
 }
 
-/* Ошибки */
 .error {
   font-size: 0.85rem;
   margin-top: 0.3rem;
@@ -165,7 +153,6 @@ button[type="submit"]:disabled {
   color: #fc8181;
 }
 
-/* Результат */
 .result {
   margin-top: 1.5rem;
   padding: 1rem 1.25rem;
@@ -191,7 +178,6 @@ button[type="submit"]:disabled {
   font-size: 0.95rem;
 }
 
-/* Approved / Denied */
 .approved {
   color: #2f855a;
   font-weight: 700;
@@ -212,7 +198,6 @@ button[type="submit"]:disabled {
   color: #fc8181;
 }
 
-/* Кнопка переключения темы */
 .theme-toggle {
   display: flex;
   justify-content: flex-end;
