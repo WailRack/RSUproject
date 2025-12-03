@@ -31,7 +31,7 @@ credit-scoring-service/
 │   ├── build.gradle
 │   └── Dockerfile
 │
-├── newfrontend/             # Angular + Nginx приложение
+├── frontend/             # Angular + Nginx приложение
 │   ├── public/
 │   ├── src/
 │   └── index.html
