@@ -1,0 +1,229 @@
+:host {
+  display: block;
+  font-family: 'Inter', 'Segoe UI', 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+::ng-deep body {
+  margin: 0;
+  transition: background 0.5s ease, color 0.5s ease;
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+::ng-deep body.light {
+  background: linear-gradient(135deg, #fdf6f0, #e0e7ff) !important;
+  color: #1e1e1e !important;
+}
+
+::ng-deep body.dark {
+  background: linear-gradient(135deg, #1a1a2e, #162447) !important;
+  color: #f0f0f0 !important;
+}
+
+.scoring-container {
+  max-width: 480px;
+  margin: 3rem auto;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.9);
+  transition: background 0.5s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+::ng-deep body.dark .scoring-container {
+  background: rgba(28,28,48,0.9);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.form-row {
+  margin-bottom: 1.25rem;
+}
+
+.form-row label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: inherit;
+}
+
+input[type="number"], 
+input[type="checkbox"], 
+button {
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background: #ffffff;
+  color: #1e1e1e;
+}
+
+::ng-deep body.dark input[type="number"] {
+  background: #2c2c44;
+  color: #f0f0f0;
+  border-color: #555;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #5a67d8;
+  box-shadow: 0 0 0 2px rgba(90,103,216,0.2);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-row label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  width: 100%;
+  margin-top: 1.25rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  box-shadow: 0 4px 10px rgba(102,126,234,0.3);
+}
+
+::ng-deep body.dark button[type="submit"] {
+  background: linear-gradient(135deg, #4c5c9e, #6a4c8f);
+  color: white;
+  box-shadow: 0 4px 10px rgba(76,92,158,0.4);
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  color: #e53e3e;
+}
+
+.global-error {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(229,62,62,0.1);
+  border-left: 4px solid #e53e3e;
+}
+
+::ng-deep body.dark .error {
+  color: #fc8181;
+}
+
+.result {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: rgba(0,0,0,0.02);
+  border: 1px solid #eee;
+}
+
+::ng-deep body.dark .result {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #444;
+}
+
+.result h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.result p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.approved {
+  color: #2f855a;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.denied {
+  color: #e53e3e;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+::ng-deep body.dark .approved {
+  color: #68d391;
+}
+
+::ng-deep body.dark .denied {
+  color: #fc8181;
+}
+
+.theme-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.theme-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 24px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  background: rgba(102,126,234,0.1);
+  color: #333;
+}
+
+::ng-deep body.dark .theme-button {
+  background: rgba(104,211,145,0.15);
+  color: #eee;
+}
+
+.theme-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

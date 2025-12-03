@@ -15,7 +15,7 @@
 
 **Frontend:**
 - TypeScript
-- React 19
+- Angular 18
 
 **Infrastructure:**
 - Docker + Docker Compose
@@ -31,7 +31,7 @@ credit-scoring-service/
 │   ├── build.gradle
 │   └── Dockerfile
 │
-├── frontend/             # React + Vite приложение
+├── newfrontend/             # Angular + Nginx приложение
 │   ├── public/
 │   ├── src/
 │   └── index.html
