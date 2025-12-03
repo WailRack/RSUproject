@@ -22,13 +22,11 @@ export interface ScoreResponse {
   providedIn: 'root',
 })
 export class ScoringService {
-
-  private readonly baseUrl = 'http://localhost:8080/api/score';
+  private readonly baseUrl = '/api/score';
 
   constructor(private readonly http: HttpClient) {}
 
   score(request: ScoreRequest): Observable<ScoreResponse> {
     return this.http.post<ScoreResponse>(this.baseUrl, request);
   }
-  
 }
