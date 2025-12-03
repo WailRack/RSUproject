@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgIf, NgClass, PercentPipe, DecimalPipe } from '@angular/common';
 import { ScoreResponse, ScoringService } from '../scoring.service';
@@ -21,10 +22,12 @@ export class ScoringFormComponent {
   loading = signal(false);
   error = signal<string | null>(null);
   result = signal<ScoreResponse | null>(null);
+  isDark = signal(false);
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly scoringService: ScoringService
+    private readonly scoringService: ScoringService,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.form = this.fb.group({
       age: [null, [Validators.required, Validators.min(18), Validators.max(100)]],
@@ -34,6 +37,26 @@ export class ScoringFormComponent {
       hasExistingLoan: [false],
       creditScore: [null, [Validators.required, Validators.min(300), Validators.max(900)]]
     });
+
+    // Инициализация темы
+    this.applyTheme();
+  }
+
+  toggleTheme() {
+    this.isDark.set(!this.isDark());
+    this.applyTheme();
+  }
+
+  private applyTheme() {
+    const body = this.document.body;
+    
+    if (this.isDark()) {
+      body.classList.remove('light');
+      body.classList.add('dark');
+    } else {
+      body.classList.remove('dark');
+      body.classList.add('light');
+    }
   }
 
   submit(): void {
@@ -48,12 +71,10 @@ export class ScoringFormComponent {
 
     this.scoringService.score(this.form.value).subscribe({
       next: (res) => {
-        console.log('Ответ от бэка:', res);
         this.loading.set(false);
         this.result.set(res);
       },
       error: (err) => {
-        console.error('Ошибка запроса:', err);
         this.loading.set(false);
         this.error.set('Ошибка при запросе скоринга');
       }

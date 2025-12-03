@@ -1,4 +1,10 @@
 <div class="scoring-container">
+  <div class="theme-toggle">
+    <button type="button" (click)="toggleTheme()" class="theme-button">
+      {{ isDark() ? '🌙 Тёмная' : '☀️ Светлая' }} тема
+    </button>
+  </div>
+    
   <h2>Кредитный скоринг</h2>
   
   <form [formGroup]="form" (ngSubmit)="submit()">
