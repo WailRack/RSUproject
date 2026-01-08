@@ -1,10 +1,43 @@
 services:
 
+  decision-engine:
+    build:
+      context: .
+      dockerfile: decision-engine/Dockerfile
+    container_name: decision-engine
+    ports:
+      - "8081:8081"
+    networks:
+      - scoring-net
+
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: backend
     ports:
       - "8080:8080"
+    environment:
+      - APP_SCORING_USE_REMOTE=true
+      - DECISION_ENGINE_URL=http://decision-engine:8081
+    depends_on:
+      - decision-engine
+    networks:
+      - scoring-net
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8082:8082"
+    environment:
+      - BACKEND_URL=http://backend:8080
+      - DECISION_ENGINE_URL=http://decision-engine:8081
+    depends_on:
+      - backend
+      - decision-engine
     networks:
       - scoring-net
 
@@ -16,7 +49,7 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      - backend
+      - api-gateway
     networks:
       - scoring-net
 

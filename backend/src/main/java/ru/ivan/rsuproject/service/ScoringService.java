@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 import ru.ivan.rsuproject.dto.ScoreRequest;
 import ru.ivan.rsuproject.dto.ScoreResponse;
 
@@ -12,20 +13,9 @@ import ru.ivan.rsuproject.dto.ScoreResponse;
 @RequiredArgsConstructor
 public class ScoringService {
 
-    private final RuleBasedScoringService ruleBasedScoringService;
-    private final LogisticRegressionScoringService logisticRegressionScoringService;
+    private final ScoringProvider scoringProvider;
 
-    public ScoreResponse score(ScoreRequest request) {
-        double ruleScore = ruleBasedScoringService.calculateScore(request);
-        double defaultProb = logisticRegressionScoringService.predictDefaultProbability(request);
-
-        log.info("{}",ruleScore);
-        log.info("{}", defaultProb);
-
-
-        boolean approved = ruleScore >= 50 && defaultProb <= 0.5;
-        log.info("{}", approved);
-
-        return new ScoreResponse(ruleScore, defaultProb, approved);
+    public Mono<ScoreResponse> score(ScoreRequest request) {
+        return scoringProvider.calculateScore(request);
     }
 }

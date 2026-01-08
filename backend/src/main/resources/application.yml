@@ -3,8 +3,13 @@ spring:
     name: scoring-service
 
 app:
+  scoring:
+    use-remote: false
   cors:
     dev-mode: true
+
+decision-engine:
+  url: http://localhost:8081
 
 server:
   port: 8080

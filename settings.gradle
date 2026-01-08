@@ -1,2 +1,4 @@
 rootProject.name = 'RSUproject'
 include 'backend'
+include 'decision-engine'
+include 'api-gateway'

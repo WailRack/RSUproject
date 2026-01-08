@@ -1,13 +1,11 @@
-package ru.ivan.rsuproject;
+package ru.ivan.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RSUprojectApplication {
-
+public class GatewayApplication {
     public static void main(String[] args) {
-        SpringApplication.run(RSUprojectApplication.class, args);
+        SpringApplication.run(GatewayApplication.class, args);
     }
-
 }

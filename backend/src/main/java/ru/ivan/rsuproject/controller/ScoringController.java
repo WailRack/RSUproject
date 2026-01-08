@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 import ru.ivan.rsuproject.dto.ScoreRequest;
 import ru.ivan.rsuproject.dto.ScoreResponse;
 import ru.ivan.rsuproject.service.ScoringService;
@@ -17,7 +18,7 @@ public class ScoringController {
     private final ScoringService scoringService;
 
     @PostMapping
-    public ScoreResponse score(@RequestBody ScoreRequest request) {
+    public Mono<ScoreResponse> score(@RequestBody ScoreRequest request) {
         return scoringService.score(request);
     }
 }
