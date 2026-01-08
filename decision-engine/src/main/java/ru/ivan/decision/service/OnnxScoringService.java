@@ -4,17 +4,18 @@ import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 import ai.onnxruntime.OrtSession;
+import ai.onnxruntime.OnnxValue;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.ivan.decision.dto.ScoringRequest;
-import ru.ivan.decision.dto.ScoringResponse;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.Collections;
 import java.util.Map;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -23,27 +24,38 @@ public class OnnxScoringService {
     private OrtEnvironment env;
     private OrtSession session;
     private String inputName;
+    private String probabilityOutputName;
 
     @PostConstruct
     public void init() throws IOException, OrtException {
         this.env = OrtEnvironment.getEnvironment();
-        // Load model from resources
         var modelStream = getClass().getResourceAsStream("/credit_scoring.onnx");
         if (modelStream == null) {
             throw new IOException("Model file not found in resources");
         }
         byte[] modelBytes = modelStream.readAllBytes();
         this.session = env.createSession(modelBytes, new OrtSession.SessionOptions());
-        
-        // Detect input name
         this.inputName = session.getInputNames().iterator().next();
-        log.info("ONNX Model loaded. Input name: {}", inputName);
+        
+        // Find probability output name
+        for (String name : session.getOutputNames()) {
+            if (name.toLowerCase().contains("prob")) {
+                this.probabilityOutputName = name;
+            }
+        }
+        // Fallback to second output if name-based search fails
+        if (this.probabilityOutputName == null && session.getOutputNames().size() > 1) {
+            var it = session.getOutputNames().iterator();
+            it.next(); // skip label
+            this.probabilityOutputName = it.next();
+        }
+
+        log.info("ONNX Model loaded. Input: {}, Prob Output: {}, All Outputs: {}", 
+            inputName, probabilityOutputName, session.getOutputNames());
     }
 
-    public ScoringResponse score(ScoringRequest request) {
+    public double predictProbability(ScoringRequest request) {
         try {
-            // Prepare input tensor [1, 6]
-            // Order: age, income, years_at_job, dependents, has_existing_loan, credit_score
             float[] data = new float[6];
             data[0] = request.age() != null ? request.age().floatValue() : 0.0f;
             data[1] = request.income() != null ? request.income().floatValue() : 0.0f;
@@ -58,56 +70,48 @@ public class OnnxScoringService {
             OnnxTensor tensor = OnnxTensor.createTensor(env, buffer, shape);
             
             try (var results = session.run(Collections.singletonMap(inputName, tensor))) {
-                // Assuming Output 0 is label (long) and Output 1 is probabilities (map or list)
-                // Or scikit-learn style: "label", "probabilities"
-                
-                // Let's inspect outputs dynamically or assume standard sklearn-onnx output
-                // Usually: output (int64), output_probability (seq<map<int64, float>>)
-                
-                var resultIterator = results.iterator();
-                var labelResult = resultIterator.next(); // 0: label
-                var probResult = resultIterator.hasNext() ? resultIterator.next() : null; // 1: probabilities
+                if (probabilityOutputName == null) {
+                    log.warn("Probability output name not found, returning 0.0");
+                    return 0.0;
+                }
 
-                long predictedLabel = ((long[]) labelResult.getValue().getValue())[0];
-                double probability = 0.0;
+                OnnxValue probValue = results.get(probabilityOutputName).get();
+                Object value = probValue.getValue();
+                log.debug("Probability output actual value class: {}", value.getClass().getName());
 
-                if (probResult != null) {
-                    // Extract probability for class 1 (default)
-                    // Structure depends on export. Often List<Map<Long, Float>>
-                    var value = probResult.getValue().getValue();
-                    log.debug("Probability output type: {}", value.getClass());
-                    
-                    if (value instanceof java.util.List) {
-                        var list = (java.util.List<?>) value;
-                        if (!list.isEmpty() && list.get(0) instanceof Map) {
-                            var map = (Map<?, ?>) list.get(0);
-                            log.info("Probabilities map content: {}", map);
-                            
-                            // Assuming 1L is 'default' (bad), 0L is good.
-                            // Try Long first, then Integer
-                            Object probObj = map.get(1L); 
-                            if (probObj == null) {
-                                probObj = map.get(1);
-                            }
-                            
-                            if (probObj instanceof Float) {
-                                probability = ((Float) probObj).doubleValue();
-                            } else {
-                                log.warn("Probability value for key 1 is not Float or not found: {}", probObj);
-                            }
+                // Case 1: Sequence of Maps (Standard sklearn-onnx)
+                if (value instanceof List) {
+                    List<?> list = (List<?>) value;
+                    if (!list.isEmpty()) {
+                        Object firstElem = list.get(0);
+                        if (firstElem instanceof Map) {
+                            Map<?, ?> map = (Map<?, ?>) firstElem;
+                            log.info("Probabilities Map found: {}", map);
+                            Object p = map.get(1L);
+                            if (p == null) p = map.get(1);
+                            if (p instanceof Float) return ((Float) p).doubleValue();
+                        } else {
+                            log.warn("List element is not a Map: {}", firstElem.getClass().getName());
                         }
+                    }
+                } 
+                
+                // Case 2: Multi-dimensional array (float[][])
+                if (value instanceof float[][]) {
+                    float[][] array = (float[][]) value;
+                    if (array.length > 0 && array[0].length > 1) {
+                        log.info("Probabilities Array found, taking [0][1]: {}", array[0][1]);
+                        return array[0][1];
                     }
                 }
 
-                boolean approved = predictedLabel == 0; // Assuming 0 = No Default, 1 = Default
-                String reason = approved ? "Low risk" : "High risk of default";
-
-                return new ScoringResponse(approved, probability, reason);
+                log.warn("Could not parse probability from output: {}", value);
+                return 0.0;
             }
 
         } catch (OrtException e) {
-            log.error("Scoring failed", e);
-            throw new RuntimeException("Scoring computation failed", e);
+            log.error("Scoring inference failed", e);
+            throw new RuntimeException("ML Inference failed", e);
         }
     }
 

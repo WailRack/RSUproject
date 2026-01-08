@@ -22,18 +22,31 @@ public class RemoteScoringProvider implements ScoringProvider {
     public Mono<ScoreResponse> calculateScore(ScoreRequest request) {
         log.info("Using Remote Scoring Provider via {}", webClient);
         
-        record RemoteResponse(boolean approved, double probability, String decisionReason) {}
+        // Define internal DTOs matching the Decision Engine's new contract
+        record ComponentsDto(double ruleScore, double probabilityOfDefault, String appliedStrategyId) {}
+        record DecisionEngineResponse(String decision, ComponentsDto components, String rejectReason) {}
 
         return webClient.post()
             .uri("/api/v1/decisions")
             .bodyValue(request)
             .retrieve()
-            .bodyToMono(RemoteResponse.class)
-            .map(response -> {
-                // Mapping:
-                // ruleScore -> 100.0 if approved, 0.0 if not (Dummy value)
-                double dummyRuleScore = response.approved() ? 100.0 : 0.0;
-                return new ScoreResponse(dummyRuleScore, response.probability(), response.approved());
+            .bodyToMono(DecisionEngineResponse.class)
+            .map(resp -> {
+                log.info("Received decision: {}", resp);
+                boolean approved = "APPROVED".equals(resp.decision());
+                
+                double pd = -1.0;
+                double rScore = 0.0;
+                
+                if (resp.components() != null) {
+                    pd = resp.components().probabilityOfDefault();
+                    rScore = resp.components().ruleScore();
+                } else if (resp.decision().equals("REJECTED") && resp.rejectReason().contains("FAIL_FAST")) {
+                    // Handle fail-fast where components might be partial or null (though our engine returns them)
+                     // In our impl, components are always present even on fail fast, but good to be safe.
+                }
+
+                return new ScoreResponse(rScore, pd, approved);
             });
     }
 }

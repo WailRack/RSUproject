@@ -1,7 +1,7 @@
 package ru.ivan.decision.dto;
 
 public record ScoringResponse(
-    boolean approved,
-    double probability,
-    String decisionReason
+    DecisionResult decision,
+    ScoringComponents components,
+    String rejectReason
 ) {}

@@ -7,17 +7,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ivan.decision.dto.ScoringRequest;
 import ru.ivan.decision.dto.ScoringResponse;
-import ru.ivan.decision.service.OnnxScoringService;
+import ru.ivan.decision.service.DecisionStrategy;
 
 @RestController
 @RequestMapping("/api/v1/decisions")
 @RequiredArgsConstructor
 public class ScoringController {
 
-    private final OnnxScoringService scoringService;
+    private final DecisionStrategy decisionStrategy;
 
     @PostMapping
     public ScoringResponse makeDecision(@RequestBody ScoringRequest request) {
-        return scoringService.score(request);
+        return decisionStrategy.assess(request);
     }
 }

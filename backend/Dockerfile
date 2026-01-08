@@ -1,15 +1,24 @@
 # Build stage
-FROM gradle:8.13-jdk21 AS build
+FROM gradle:8.13-jdk21-jammy AS builder
 WORKDIR /app
-# Копируем файлы конфигурации Gradle для кэширования зависимостей (если мы решим использовать кэш слоев)
-# Но сейчас используем прямой метод с системным Gradle
-COPY --chown=gradle:gradle . .
-# Используем 'gradle', который уже есть в образе, вместо './gradlew', который качает дистрибутив
-RUN gradle :backend:build -x test --no-daemon
 
-# Run stage
+COPY settings.gradle ./
+
+COPY gradle ./gradle
+
+RUN gradle :backend:dependencies --no-daemon || true
+
+COPY backend ./backend
+
+RUN gradle :backend:bootJar -x test --no-daemon
+
+# Runtime stage
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
-COPY --from=build /app/backend/build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+USER appuser
+
+COPY --from=builder /app/backend/build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
