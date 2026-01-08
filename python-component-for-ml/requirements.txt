@@ -1,0 +1,7 @@
+numpy==1.26.4
+pandas==2.1.4
+scikit-learn==1.4.2
+skl2onnx==1.16.0
+onnx==1.15.0
+onnxruntime==1.17.3
+joblib
