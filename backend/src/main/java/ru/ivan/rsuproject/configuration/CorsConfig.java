@@ -14,31 +14,30 @@ public class CorsConfig {
 
     @Value("${app.cors.dev-mode:false}")
     private boolean devMode;
-    
+
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        
+
         if (devMode) {
             config.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:*",
                 "http://127.0.0.1:*"
             ));
         } else {
-            // Add production origins here
             config.setAllowedOrigins(Arrays.asList(
                 "https://rgu62.ru"
             ));
         }
-        
+
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setMaxAge(3600L);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-        
+
         return new CorsWebFilter(source);
     }
 }

@@ -1,6 +1,6 @@
 # Credit Scoring Service
 
-Учебный проект, реализующий сервис оценки кредитоспособности клиентов.  
+Учебный проект, реализующий сервис оценки кредитоспособности клиентов.
 Проект построен на микросервисной архитектуре, включающей **Backend** (API Gateway, Core Backend, Decision Engine) и **Frontend**, с использованием **Docker** для контейнеризации. Также включен модуль **ML** на Python для подготовки моделей.
 
 ---
@@ -10,7 +10,7 @@
 **Backend (Java):**
 - Java 21
 - Spring Boot 3.5.7
-- Lombok 
+- Lombok
 - Gradle (Groovy DSL)
 - ONNX Runtime (в Decision Engine)
 

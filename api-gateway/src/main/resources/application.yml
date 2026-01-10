@@ -7,20 +7,18 @@ spring:
   cloud:
     gateway:
       routes:
-        # Backend Routes
         - id: backend-docs
           uri: ${BACKEND_URL:http://localhost:8080}
           predicates:
             - Path=/docs/backend
           filters:
             - RewritePath=/docs/backend, /v3/api-docs
-        
+
         - id: backend
           uri: ${BACKEND_URL:http://localhost:8080}
           predicates:
             - Path=/api/**
-        
-        # Decision Engine Routes
+
         - id: decision-engine-docs
           uri: ${DECISION_ENGINE_URL:http://localhost:8081}
           predicates:

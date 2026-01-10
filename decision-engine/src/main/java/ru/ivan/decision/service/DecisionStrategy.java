@@ -16,18 +16,15 @@ public class DecisionStrategy {
     private final RuleEngine ruleEngine;
     private final OnnxScoringService mlService;
 
-    // Strategy Configuration (Better to move to application.yml)
     private static final double MIN_RULE_SCORE = 60.0;
-    private static final double MAX_PD_ALLOWED = 0.40; // 40% risk tolerance (relaxed for demo)
-    private static final double MANUAL_REVIEW_PD_THRESHOLD = 0.30; // 30-40% -> Manual
+    private static final double MAX_PD_ALLOWED = 0.40;
+    private static final double MANUAL_REVIEW_PD_THRESHOLD = 0.30;
 
     public ScoringResponse assess(ScoringRequest request) {
         log.info("Starting assessment for request: {}", request);
 
-        // 1. Rule Engine Execution
         double ruleScore = ruleEngine.calculateRuleScore(request);
-        
-        // 2. Fail Fast Optimization
+
         if (ruleScore == 0.0) {
             log.info("Auto-reject by rules. Score: 0");
             return new ScoringResponse(
@@ -37,11 +34,9 @@ public class DecisionStrategy {
             );
         }
 
-        // 3. ML Inference
         double pd = mlService.predictProbability(request);
         log.info("ML Probability of Default: {}", pd);
 
-        // 4. Decision Matrix
         DecisionResult result;
         String reason;
 

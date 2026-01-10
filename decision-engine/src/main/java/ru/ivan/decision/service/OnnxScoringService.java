@@ -36,21 +36,19 @@ public class OnnxScoringService {
         byte[] modelBytes = modelStream.readAllBytes();
         this.session = env.createSession(modelBytes, new OrtSession.SessionOptions());
         this.inputName = session.getInputNames().iterator().next();
-        
-        // Find probability output name
+
         for (String name : session.getOutputNames()) {
             if (name.toLowerCase().contains("prob")) {
                 this.probabilityOutputName = name;
             }
         }
-        // Fallback to second output if name-based search fails
         if (this.probabilityOutputName == null && session.getOutputNames().size() > 1) {
             var it = session.getOutputNames().iterator();
-            it.next(); // skip label
+            it.next();
             this.probabilityOutputName = it.next();
         }
 
-        log.info("ONNX Model loaded. Input: {}, Prob Output: {}, All Outputs: {}", 
+        log.info("ONNX Model loaded. Input: {}, Prob Output: {}, All Outputs: {}",
             inputName, probabilityOutputName, session.getOutputNames());
     }
 
@@ -66,9 +64,9 @@ public class OnnxScoringService {
 
             FloatBuffer buffer = FloatBuffer.wrap(data);
             long[] shape = {1, 6};
-            
+
             OnnxTensor tensor = OnnxTensor.createTensor(env, buffer, shape);
-            
+
             try (var results = session.run(Collections.singletonMap(inputName, tensor))) {
                 if (probabilityOutputName == null) {
                     log.warn("Probability output name not found, returning 0.0");
@@ -79,7 +77,6 @@ public class OnnxScoringService {
                 Object value = probValue.getValue();
                 log.debug("Probability output actual value class: {}", value.getClass().getName());
 
-                // Case 1: Sequence of Maps (Standard sklearn-onnx)
                 if (value instanceof List) {
                     List<?> list = (List<?>) value;
                     if (!list.isEmpty()) {
@@ -94,9 +91,7 @@ public class OnnxScoringService {
                             log.warn("List element is not a Map: {}", firstElem.getClass().getName());
                         }
                     }
-                } 
-                
-                // Case 2: Multi-dimensional array (float[][])
+                }
                 if (value instanceof float[][]) {
                     float[][] array = (float[][]) value;
                     if (array.length > 0 && array[0].length > 1) {
